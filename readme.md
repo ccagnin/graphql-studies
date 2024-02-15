@@ -74,3 +74,96 @@ type Query {
   }
 }
 ```
+
+## Aula 4
+- Object Types: Tipos de objetos - Permite criar objetos com campos personalizados
+
+```javascript
+type Query {
+  person: Person!
+}
+
+type Person {
+  id: ID!
+  name: String!
+  age: Int!
+  average: Float!
+  isGood: Boolean!
+  array: [String!]!
+}
+```
+
+### Response
+```graphql
+{
+  "data": {
+    "person": {
+      "id": "1",
+      "name": "John Doe",
+      "age": 30,
+      "average": 7.5,
+      "isGood": true,
+      "array": [
+        "one",
+        "two",
+        "three"
+      ]
+    }
+  }
+}
+```
+
+- Na request, obrigatoriamente, é necessário passar todos os campos desejados no type Person, não sendo possível passar apenas `Person` sem os campos
+
+- Podemos também retornar um array de objetos
+
+```javascript
+type Query {
+  people: [Person!]!
+}
+
+type Person {
+  id: ID!
+  name: String!
+  age: Int!
+  average: Float!
+  isGood: Boolean!
+  array: [String!]!
+}
+```
+
+### Response
+```graphql
+{
+  "data": {
+    "people": [
+      {
+        "id": "1",
+        "name": "John Doe",
+        "age": 30,
+        "average": 7.5,
+        "isGood": true,
+        "array": [
+          "one",
+          "two",
+          "three"
+        ]
+      },
+      {
+        "id": "2",
+        "name": "Jane Doe",
+        "age": 25,
+        "average": 8.5,
+        "isGood": true,
+        "array": [
+          "four",
+          "five",
+          "six"
+        ]
+      }
+    ]
+  }
+}
+```
+
+

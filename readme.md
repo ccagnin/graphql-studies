@@ -35,3 +35,42 @@ type Query {
 }
 ```
 
+## Aula 3
+
+- Tipos escalares: Tipos primitivos do GraphQL, como String, Int, Float, Boolean e ID
+- !: Indica que o campo é obrigatório, não pode ser nulo
+- Pode-se criar arrays de tipos escalares
+- [String!]!: Array de strings não nulas
+    - ! após o String: strings dentro do array não podem ser nulas
+    - ! após o array: o array em si não pode ser nulo
+    - ! após o array e após o String: o array e as strings dentro do array não podem ser nulas
+
+### Query
+```graphql
+type Query {
+  id: ID!
+  name: String!
+  age: Int!
+  average: Float!
+  isGood: Boolean!
+  array: [String!]!
+}
+```
+
+### Response
+```graphql
+{
+  "data": {
+    "id": "1",
+    "name": "John Doe",
+    "age": 30,
+    "average": 7.5,
+    "isGood": true,
+    "array": [
+      "one",
+      "two",
+      "three"
+    ]
+  }
+}
+```

@@ -166,4 +166,10 @@ type Person {
 }
 ```
 
+## Aula 6, 7 e 8 - Separando os arquivos
+
+- Olhar os commits
+
+
+
 

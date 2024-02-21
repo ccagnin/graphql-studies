@@ -1,5 +1,3 @@
-import { context } from '../context';
-
 const getUsers = async (_, __, context) => {
   const users = await context.getUsers();
   return users.data;
@@ -12,7 +10,7 @@ const getUser = async (_, { id }, context) => {
 
 export const userResolvers = {
   Query: {
-    users: () => getUsers(),
-    user: (_, { id }) => getUser(_, { id }, context()),
+    users: getUsers,
+    user: getUser,
   },
 };

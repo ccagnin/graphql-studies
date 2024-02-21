@@ -260,11 +260,17 @@ const getUser = async (_, { id }, context) => {
 
 export const userResolvers = {
   Query: {
-    users: () => getUsers(),
-    user: (_, { id }) => getUser(_, { id }, context()),
+    users: getUsers,
+    user: getUser,
   },
 };
 ```
+
+## Aula 13 - Exercício Post
+
+- Fix no users
+
+
 
 
 

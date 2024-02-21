@@ -1,34 +1,16 @@
-const posts = [
-  {
-    id: '1',
-    title: 'Hello World',
-    content: 'This is post 1',
-    user: {
-      id: '1',
-    },
-  },
-  {
-    id: '2',
-    title: 'Hello World 2',
-    content: 'This is post 2',
-    user: {
-      id: '2',
-    },
-  },
-];
+const getPosts = async (_, __, context) => {
+  const posts = await context.getPosts();
+  return posts.data;
+};
 
-const post = {
-  id: '1',
-  title: 'Hello World',
-  content: 'This is post 1',
-  user: {
-    id: '1',
-  },
+const getPost = async (_, { id }, context) => {
+  const post = await context.getPosts(`/${id}`);
+  return post.data;
 };
 
 export const postResolvers = {
   Query: {
-    post: () => post,
-    posts: () => posts,
+    posts: getPosts,
+    post: getPost,
   },
 };

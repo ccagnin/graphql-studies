@@ -5,13 +5,17 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -r sucrase/register src/index.js"
+    "dev": "nodemon -r sucrase/register src/index.js",
+    "server": "json-server --watch db.json --port 3001"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^3.13.0",
-    "graphql": "^16.8.1"
+    "axios": "^1.6.7",
+    "graphql": "^16.8.1",
+    "json-server": "^1.0.0-alpha.23",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.0.1",

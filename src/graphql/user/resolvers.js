@@ -1,26 +1,18 @@
-import axios from 'axios';
+import { context } from '../context';
 
-const getUsers = async (_, __, { axios }) => {
-  try {
-    const response = await axios.get('http://localhost:3001/users');
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
-  }
+const getUsers = async (_, __, context) => {
+  const users = await context.getUsers();
+  return users.data;
 };
 
-const getUser = async (_, { id }, { axios }) => {
-  try {
-    const response = await axios.get(`http://localhost:3001/users/${id}`);
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
-  }
+const getUser = async (_, { id }, context) => {
+  const response = await context.getUsers(`/${id}`);
+  return response.data;
 };
 
 export const userResolvers = {
   Query: {
     users: () => getUsers(),
-    user: (_, { id }) => getUser(_, { id }, { axios }),
+    user: (_, { id }) => getUser(_, { id }, context()),
   },
 };

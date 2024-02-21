@@ -206,6 +206,20 @@ export const userResolvers = {
 };
 ```
 
+## Aula 11 - Argumentos nos resolvers
+
+- Adição de argumentos nos resolvers
+
+```javascript
+const getUser = async (_, { id }, { axios }) => {
+  try {
+    const response = await axios.get(`http://localhost:3001/users/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+````
 
 
 

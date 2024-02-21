@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const getUsers = async (_, __, { axios }) => {
   try {
     const response = await axios.get('http://localhost:3001/users');
@@ -19,6 +21,6 @@ const getUser = async (_, { id }, { axios }) => {
 export const userResolvers = {
   Query: {
     users: () => getUsers(),
-    user: (_, { id }) => getUser(_, { id }),
+    user: (_, { id }) => getUser(_, { id }, { axios }),
   },
 };

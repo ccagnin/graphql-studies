@@ -270,6 +270,20 @@ export const userResolvers = {
 
 - Fix no users
 
+## Aula 14 - Argumentos dinâmicos para Queries e Resolvers
+
+- Adição de argumentos dinâmicos para as queries e resolvers
+
+```graphql
+query GetUser($id: ID!) {
+  user(id: $id) {
+    id
+    userName
+  }
+}
+```
+
+
 
 
 

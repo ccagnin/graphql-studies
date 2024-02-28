@@ -286,7 +286,7 @@ query GetUser($id: ID!) {
 # Aula 15 - Trivial Resolvers
 
 - Adição de trivial resolvers para os campos que não possuem resolvers
-- Exemplo: Adição de trivial resolver para o campo `unixTimestamp` do type `Post`
+- Exemplo: Adição de trivial resolver para o campo `unixTimestamp` do type `Post` que retorna o timestamp em segundos.
 
 ```javascript
 export const postResolvers = {

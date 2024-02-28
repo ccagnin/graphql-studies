@@ -389,6 +389,33 @@ E nos typeDefs, o input type é definido da seguinte forma:
   }
 ```
 
+Podemos utilizar de forma dinâmica na query:
+
+```graphql
+query GetPosts($input: ApiFiltersInput) {
+  posts(input: $input) {
+    id
+    title
+    createdAt
+  }
+}
+```
+
+E adicionando as variáveis:
+
+```json
+{
+  "input": {
+    "_sort": "createdAt",
+    "_order": "desc", // não funcionou no json-server, então foi removido
+    "_start": 0,
+    "_limit": 2
+  }
+}
+```
+
+
+
 
 
 

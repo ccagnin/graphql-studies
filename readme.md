@@ -320,7 +320,23 @@ query GetPost($id: ID!) {
 
 # Aula 17 - Fragments
 
+- Adição de fragments para reutilização de campos em queries
 
+```graphql
+fragment post on Post {
+  id
+  title
+  unixTimestamp
+}
+
+query GetPost($id: ID!) {
+  post1: post(id: $id) {
+    ...post
+  }
+}
+```
+
+- No exemplo acima, o fragment `post` foi criado para reutilizar os campos `id`, `title` e `unixTimestamp` em queries
 
 
 

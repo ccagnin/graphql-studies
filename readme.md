@@ -414,8 +414,63 @@ E adicionando as variáveis:
 }
 ```
 
+# Aula 19 - Enum Types
 
+- Adição de enum types para parametrização de paginadores
 
+Implementação no typeDefs:
+
+```javascript
+export const apiFiltersTypeDefs = gql`
+  input ApiFiltersInput {
+    _sort: String
+    _order: ApiFiltersOrderEnum
+    _start: Int
+    _limit: Int
+  }
+
+  enum ApiFiltersOrderEnum {
+    ASC
+    DESC
+  }
+`;
+```
+
+Nos resolvers:
+
+```javascript
+export const ApiFiltersResolvers = {
+  ApiFiltersOrderEnum: {
+    ASC: 'asc',
+    DESC: 'desc',
+  },
+};
+```
+
+Na query:
+
+```graphql
+query GetPosts($input: ApiFiltersInput) {
+  posts(input: $input) {
+    id
+    title
+    createdAt
+  }
+}
+```
+
+E nas variáveis:
+
+```json
+{
+  "input": {
+    "_sort": "indexRef",
+    "_order": "DESC",
+    "_start": 0,
+    "_limit": 2
+  }
+}
+```
 
 
 

@@ -303,6 +303,24 @@ export const postResolvers = {
 };
 ```
 
+# Aula 16 - Alias nas Queries
+
+- Adição de alias nas queries, que são utilizados para renomear os campos retornados
+
+```graphql
+query GetPost($id: ID!) {
+  post1: post(id: $id) {
+    postId: id
+    unixTimestamp
+  }
+}
+```
+
+- No exemplo acima, o campo `id` foi renomeado para `postId`
+
+# Aula 17 - Fragments
+
+
 
 
 

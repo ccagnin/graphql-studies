@@ -338,6 +338,56 @@ query GetPost($id: ID!) {
 
 - No exemplo acima, o fragment `post` foi criado para reutilizar os campos `id`, `title` e `unixTimestamp` em queries
 
+# Aula 18 - Input Types
+
+- Adição de input types para parametrização de paginadores
+
+```graphql
+query GetUsers {
+  users(input: {
+    _sort: "indexRef"
+    _start: 0
+    _limit: 1
+  }) {
+    id
+    firstName
+  }
+}
+```
+
+- No exemplo acima, o input type `UserInput` foi criado para parametrizar a query `users`
+
+- Criamos a pasta `api-filters` e no arquivo `typeDefs` criamos o input type `ApiFiltersInput`
+
+```javascript
+export const apiFiltersTypeDefs = gql`
+  input ApiFiltersInput {
+    _sort: String
+    _order: String
+    _start: Int
+    _limit: Int
+  }
+`;
+```
+
+Nos resolvers, o input type é utilizado da seguinte forma:
+
+```javascript
+const getUsers = async (_, { input }, context) => {
+  const ApiFiltersInput = new URLSearchParams(input).toString();
+  const users = await context.getUsers(`/?${ApiFiltersInput}`);
+  return users.data;
+};
+```
+
+E nos typeDefs, o input type é definido da seguinte forma:
+
+```javascript
+  extend type Query {
+    user(id: ID!): User
+    users(input: ApiFiltersInput): [User!]!
+  }
+```
 
 
 

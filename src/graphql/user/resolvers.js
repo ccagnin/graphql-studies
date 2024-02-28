@@ -1,5 +1,6 @@
-const getUsers = async (_, __, context) => {
-  const users = await context.getUsers();
+const getUsers = async (_, { input }, context) => {
+  const ApiFiltersInput = new URLSearchParams(input).toString();
+  const users = await context.getUsers(`/?${ApiFiltersInput}`);
   return users.data;
 };
 

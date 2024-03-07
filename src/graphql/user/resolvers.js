@@ -1,11 +1,11 @@
-const getUsers = async (_, { input }, context) => {
+const getUsers = async (_, { input }, { getUsers }) => {
   const ApiFiltersInput = new URLSearchParams(input).toString();
-  const users = await context.getUsers(`/?${ApiFiltersInput}`);
+  const users = await getUsers(`/?${ApiFiltersInput}`);
   return users.data;
 };
 
-const getUser = async (_, { id }, context) => {
-  const response = await context.getUsers(`/${id}`);
+const getUser = async (_, { id }, { getUsers }) => {
+  const response = await getUsers(`/${id}`);
   return response.data;
 };
 

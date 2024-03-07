@@ -472,6 +472,94 @@ E nas variáveis:
 }
 ```
 
+# Aula 20 - Union Types
+
+- Adição de union types para retornar diferentes tipos de objetos em uma mesma query / mesmo local
+- Exemplo: Adição de union type `SearchResult` para retornar diferentes tipos de objetos em uma mesma query
+- Uma query que retorna um array de `SearchResult` pode retornar objetos do tipo `User` e `Post` ao mesmo tempo, porém não é possível retornar objetos do tipo `User` e `Post` ao mesmo tempo no mesmo local
+
+- No exemplo que fizemos na aula, criamos um union type `PostNotFound` para retornar um objeto do tipo `Post` ou `PostNotFound` em uma mesma query, caso o post não seja encontrado pelo seu id.
+
+Implementação no typeDefs:
+
+```javascript
+  extend type Query {
+    post(id: ID!): PostResult!
+    posts(input: ApiFiltersInput): [Post!]!
+  }
+
+  type PostNotFoundError {
+    statusCode: Int!
+    message: String!
+  }
+
+  union PostResult = Post | PostNotFoundError
+```
+
+Nos resolvers:
+
+```javascript
+export const postResolvers = {
+  Query: {
+    posts: getPosts,
+    post: getPost,
+  },
+  PostResult: {
+    __resolveType: (obj) => {
+      if (obj.statusCode) {
+        return 'PostNotFoundError';
+      }
+      return 'Post';
+    },
+  },
+};
+```
+
+E a lógica para retornar o objeto do tipo `PostNotFoundError`:
+
+```javascript
+const getPost = async (_, { id }, context) => {
+  try {
+    const post = await context.getPosts(`/${id}`);
+    return post.data;
+  } catch (error) {
+    if (error.response.status === 404) {
+      return {
+        statusCode: 404,
+        message: 'Post not found',
+      };
+    } else {
+      return {
+        statusCode: 500,
+        message: 'Internal server error',
+      };
+    }
+  }
+};
+
+// só funcionou com try/catch pois o retorno do post com id errado vinha apenas como data: "Not Found", o erro era circular e não conseguia ser tratado
+```
+
+Na query:
+
+```graphql
+query GetPost($id: ID!) {
+  post(id: $id) {
+    ... on Post {
+      id
+      title
+      createdAt
+    }
+    ... on PostNotFoundError {
+      statusCode
+      message
+    }
+  }
+}
+```
+
+
+
 
 
 

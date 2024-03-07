@@ -283,7 +283,7 @@ query GetUser($id: ID!) {
 }
 ```
 
-# Aula 15 - Trivial Resolvers
+## Aula 15 - Trivial Resolvers
 
 - Adição de trivial resolvers para os campos que não possuem resolvers
 - Exemplo: Adição de trivial resolver para o campo `unixTimestamp` do type `Post` que retorna o timestamp em segundos.
@@ -303,7 +303,7 @@ export const postResolvers = {
 };
 ```
 
-# Aula 16 - Alias nas Queries
+## Aula 16 - Alias nas Queries
 
 - Adição de alias nas queries, que são utilizados para renomear os campos retornados
 
@@ -318,7 +318,7 @@ query GetPost($id: ID!) {
 
 - No exemplo acima, o campo `id` foi renomeado para `postId`
 
-# Aula 17 - Fragments
+## Aula 17 - Fragments
 
 - Adição de fragments para reutilização de campos em queries
 
@@ -338,7 +338,7 @@ query GetPost($id: ID!) {
 
 - No exemplo acima, o fragment `post` foi criado para reutilizar os campos `id`, `title` e `unixTimestamp` em queries
 
-# Aula 18 - Input Types
+## Aula 18 - Input Types
 
 - Adição de input types para parametrização de paginadores
 
@@ -414,7 +414,7 @@ E adicionando as variáveis:
 }
 ```
 
-# Aula 19 - Enum Types
+## Aula 19 - Enum Types
 
 - Adição de enum types para parametrização de paginadores
 
@@ -472,7 +472,7 @@ E nas variáveis:
 }
 ```
 
-# Aula 20 - Union Types
+## Aula 20 - Union Types
 
 - Adição de union types para retornar diferentes tipos de objetos em uma mesma query / mesmo local
 - Exemplo: Adição de union type `SearchResult` para retornar diferentes tipos de objetos em uma mesma query
@@ -558,7 +558,7 @@ query GetPost($id: ID!) {
 }
 ```
 
-# Aula 21 - Interface Types
+## Aula 21 - Interface Types
 
 - Define um contrato para os tipos que a implementam para definir campos comuns
 - No exemplo da aula definimos a interface `Post Error` com os campos `statusCode` e `message` e os tipos `PostNotFoundError` e `PostInternalServerError` que implementam a interface `PostError`
@@ -649,6 +649,13 @@ query GetPost($id: ID!) {
   }
 }
 ```
+
+## Aula 22
+
+- Limpeza do código e preparação para o próximo módulo
+
+
+# Resolvers, Relações, Problema N+1 e Soluções (como dataloader e datasource)
 
 
 

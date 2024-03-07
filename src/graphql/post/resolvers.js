@@ -5,23 +5,8 @@ const getPosts = async (_, { input }, context) => {
 };
 
 const getPost = async (_, { id }, context) => {
-  try {
-    const post = await context.getPosts(`/${id}`);
-    return post.data;
-  } catch (error) {
-    if (error.response.status === 404) {
-      return {
-        statusCode: 404,
-        message: 'Post not found',
-        postId: id,
-      };
-    } else {
-      return {
-        statusCode: 500,
-        message: 'Internal server error',
-      };
-    }
-  }
+  const response = await context.getPosts(`/${id}`);
+  return response.data;
 };
 
 export const postResolvers = {
@@ -29,23 +14,5 @@ export const postResolvers = {
     posts: getPosts,
     post: getPost,
   },
-  Post: {
-    unixTimestamp: ({ createdAt }) => {
-      const timestamp = new Date(createdAt).getTime() / 1000;
-      return Math.floor(timestamp).toString();
-    },
-  },
-  PostResult: {
-    __resolveType: (obj) => {
-      if (obj.statusCode === 404) return 'PostNotFoundError';
-      if (obj.id !== undefined) return 'Post';
-      return null;
-    },
-  },
-  PostError: {
-    __resolveType: (obj) => {
-      if (obj.statusCode === 404) return 'PostNotFoundError';
-      return null;
-    },
-  },
+  Post: {},
 };

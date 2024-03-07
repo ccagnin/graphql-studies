@@ -13,6 +13,7 @@ const getPost = async (_, { id }, context) => {
       return {
         statusCode: 404,
         message: 'Post not found',
+        postId: id,
       };
     } else {
       return {
@@ -36,8 +37,14 @@ export const postResolvers = {
   },
   PostResult: {
     __resolveType: (obj) => {
-      if (obj.statusCode !== undefined) return 'PostNotFoundError';
+      if (obj.statusCode === 404) return 'PostNotFoundError';
       if (obj.id !== undefined) return 'Post';
+      return null;
+    },
+  },
+  PostError: {
+    __resolveType: (obj) => {
+      if (obj.statusCode === 404) return 'PostNotFoundError';
       return null;
     },
   },

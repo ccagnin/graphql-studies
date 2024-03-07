@@ -16,9 +16,15 @@ export const postTypeDefs = gql`
     posts(input: ApiFiltersInput): [Post!]!
   }
 
-  type PostNotFoundError {
+  interface PostError {
     statusCode: Int!
     message: String!
+  }
+
+  type PostNotFoundError implements PostError {
+    statusCode: Int!
+    message: String!
+    postId: String!
   }
 
   union PostResult = Post | PostNotFoundError

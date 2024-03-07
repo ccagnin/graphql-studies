@@ -558,6 +558,99 @@ query GetPost($id: ID!) {
 }
 ```
 
+# Aula 21 - Interface Types
+
+- Define um contrato para os tipos que a implementam para definir campos comuns
+- No exemplo da aula definimos a interface `Post Error` com os campos `statusCode` e `message` e os tipos `PostNotFoundError` e `PostInternalServerError` que implementam a interface `PostError`
+```javascript
+// Utilizei apenas o primeiro tipo no código para manter mais simples
+```
+
+Exemplo de implementação:
+
+No typeDefs:
+
+```javascript
+  interface PostError {
+    statusCode: Int!
+    message: String!
+  }
+
+  type PostNotFoundError implements PostError {
+    statusCode: Int!
+    message: String!
+    postId: String!
+  }
+
+  type PostInternalServerError implements PostError {
+    statusCode: Int!
+    message: String!
+    statusText: String!
+  }
+```
+
+Nos resolvers:
+
+```javascript
+
+
+const getPost = async (_, { id }, context) => {
+  try {
+    const post = await context.getPosts(`/${id}`);
+    return post.data;
+  } catch (error) {
+    if (error.response.status === 404) {
+      return {
+        statusCode: 404,
+        message: 'Post not found',
+        postId: id,
+      };
+    } else {
+      return {
+        statusCode: 500,
+        message: 'Internal server error',
+        statusText: error.response.statusText,
+      };
+    }
+  }
+};
+
+
+
+PostError: {
+    __resolveType: (obj) => {
+      if (obj.statusCode === 404) return 'PostNotFoundError';
+      if (obj.statusCode === 500) return 'PostInternalServerError';
+      return null;
+    },
+  },
+```
+
+Na query:
+
+```graphql
+query GetPost($id: ID!) {
+  post(id: $id) {
+    ... on Post {
+      id
+      title
+      createdAt
+    }
+    ... on PostError {
+      statusCode
+      message
+    }
+    ... on PostNotFoundError {
+      postId
+    }
+    ... on PostInternalServerError {
+      statusText
+    }
+  }
+}
+```
+
+
 
 
 

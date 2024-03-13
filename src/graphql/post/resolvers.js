@@ -1,12 +1,9 @@
-const getPosts = async (_, { input }, { getPosts }) => {
-  const ApiFiltersInput = new URLSearchParams(input).toString();
-  const posts = await getPosts(`/?${ApiFiltersInput}`);
-  return posts.data;
+const getPosts = async (_, { input }, { dataSources }) => {
+  return dataSources.postAPI.getPosts(input);
 };
 
-const getPost = async (_, { id }, { getPosts }) => {
-  const response = await getPosts(`/${id}`);
-  return response.data;
+const getPost = async (_, { id }, { dataSources }) => {
+  return dataSources.postAPI.getPost(id);
 };
 
 const user = async ({ userId }, _, { userDataLoader }) => {

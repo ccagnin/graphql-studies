@@ -729,10 +729,7 @@ query GetUser($id: ID!) {
 
 ## Aula 24 - Dataloader
 
-- O dataloader é uma biblioteca que permite fazer cache de requisições, para que não seja feita uma requisição para cada objeto do array, mas sim uma requisição para todos os objetos do array de uma vez.
-- Batching: além do caching, o dataloader faz batching, que é a junção de requisições em uma única requisição, para que seja feita apenas uma requisição para todos os objetos do array.
-
-- Instalação do dataloader
+- O dataloader é uma biblioteca que permite batching de requisições, ou seja, ele agrupa as requisições e faz apenas uma requisição para cada grupo de requisições, o que melhora a performance da aplicação.
 
 ```bash
 yarn add dataloader
@@ -809,13 +806,84 @@ export const makerPostDataLoader = (getPosts) => {
 };
 ```
 
+- Essa relação é de 1 para 1, um post tem apenas um usuário, por isso usamos o userId para fazer a requisição.
+
 ## Aula 25 - Datasource
 
+- O datasource é uma forma de fazer cache de requisições, assim como o dataloader, porém o datasource é mais poderoso e flexível, pois permite fazer cache de requisições de diferentes tipos, enquanto o dataloader é específico para requisições de um único tipo.
 
 
+- Criação do arquivo `userDataSource.js`
 
+```javascript
+import { RESTDataSource } from 'apollo-datasource-rest';
 
+export class UserDataSource extends RESTDataSource {
+  constructor() {
+    super();
+    this.baseURL = process.env.API_URL;
+  }
 
+  async getPosts(urlParams) {
+    return this.get(`/posts`, urlParams);
+  }
+
+  async getUser(id) {
+    return this.get(`/users/${id}`);
+  }
+}
+```
+
+- Instancia o datasource no Apollo Server
+
+```javascript
+import { PostsApi } from './post/dataSources';
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context,
+  dataSources: () => ({
+    postAPI: new PostsAPI(),
+  }),
+});
+```
+
+- Utilização do datasource no resolver
+
+```javascript
+const getPosts = async (_, { input }, { dataSources }) => {
+  return dataSources.postAPI.getPosts(input);
+};
+
+const getPost = async (_, { id }, { dataSources }) => {
+  return dataSources.postAPI.getPost(id);
+};
+```
+
+- Por padrão o datasource já faz cache das requisições, cache em memória, porém é possível configurar o cache de acordo com a necessidade da aplicação, passando um objeto de configuração para o datasource.
+
+```javascript
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context,
+  cache: new InMemoRedisryLRUCache(), //ou qualquer outro cache que o apollo-server suporte
+  dataSources: () => ({
+    postAPI: new PostsAPI(),
+  }),
+});
+```
+- Aplicando o cache em memória, aplicamos no terceiro parametro da requisição
+
+```javascript
+  async getPosts(urlParams) {
+    return this.get(`/posts`, urlParams, {
+      cacheOptions: { ttl: 60 },
+    });
+  }
+```
 
 
 

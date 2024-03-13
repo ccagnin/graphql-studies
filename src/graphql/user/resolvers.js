@@ -14,4 +14,10 @@ export const userResolvers = {
     users: getUsers,
     user: getUser,
   },
+  User: {
+    posts: async (parent, _, { getPosts }) => {
+      const response = await getPosts(`/?userId=${parent.id}`);
+      return response.data;
+    },
+  },
 };

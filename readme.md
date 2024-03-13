@@ -657,6 +657,78 @@ query GetPost($id: ID!) {
 
 # Resolvers, Relações, Problema N+1 e Soluções (como dataloader e datasource)
 
+## Aula 23 - Relações e o problema N+1
+
+- Adição de relacionamentos entre os tipos `User` e `Post`
+- Para criar uma relação entre os tipos, é necessário criar um campo no tipo `User` que retorna um array de `Post` e um campo no tipo `Post` que retorna um objeto do tipo `User`, nos resolvers é necessário criar um resolver para cada campo que retorna um objeto do tipo `User` e um resolver para cada campo que retorna um array de `Post`
+
+```javascript
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  user: User!
+}
+```
+
+```javascript
+
+export const userResolvers = {
+  Query: {
+    users: getUsers,
+    user: getUser,
+  },
+  User: {
+    posts: ({ id }, _, context) => {
+      return context.getPosts(`?userId=${id}`).then((response) => response.data);
+    },
+  },
+};
+
+export const postResolvers = {
+  Query: {
+    posts: getPosts,
+    post: getPost,
+  },
+  Post: {
+    user: ({ userId }, _, context) => {
+      return context.getUsers(`/${userId}`).then((response) => response.data);
+    },
+  },
+};
+```
+
+E na query:
+
+```graphql
+query GetUser($id: ID!) {
+  user(id: $id) {
+    id
+    firstName
+    lastName
+    email
+    posts {
+      id
+      title
+      content
+    }
+  }
+}
+```
+
+- Porém esse metodo de resolver gera o problema N+1, que é a quantidade de requisições que são feitas ao banco de dados, quando chamamos um campo que retorna um array de objetos, é feita uma requisição para cada objeto do array, o que pode ser um problema de performance.
+- Para resolver esse problema, podemos utilizar o `dataloader` ou `datasource`
+
+## Aula 24 - Dataloader
+
 
 
 

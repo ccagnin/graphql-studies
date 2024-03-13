@@ -14,5 +14,10 @@ export const postResolvers = {
     posts: getPosts,
     post: getPost,
   },
-  Post: {},
+  Post: {
+    user: async (parent, _, context) => {
+      const response = await context.getUsers(`/${parent.userId}`);
+      return response.data;
+    },
+  },
 };

@@ -885,6 +885,45 @@ const server = new ApolloServer({
   }
 ```
 
+## Aula 26 - Dataloader e Datasource juntos
+
+- Movendo o dataloader para o datasource
+
+- Tira o dataloader do context e coloca no datasource referente
+
+```javascript
+constructor() {
+    super();
+    this.baseURL = process.env.API_URL;
+    this.dataLoader = makerPostDataLoader(this.getPost.bind(this));
+  }
+
+```
+
+- Corrige o resolver de `user` para utilizar o dataloader
+
+```javascript
+const getPosts = async ({ id }, _, { dataSources }) => {
+  return dataSources.postAPI.dataLoader.load(id);
+};
+```
+
+- Cria o metodo `batchLoadByUserId` no datasource
+
+```javascript
+
+  batchLoadByUserId(id) {
+    return this.dataLoader.loadMany(id);
+  }
+```
+
+- E altera o resolver de `posts` para utilizar o metodo `batchLoadByUserId`
+
+```javascript
+const posts = async ({ id }, _, { dataSources }) => {
+  return dataSources.postAPI.batchLoadByUserId(id);
+};
+```
 
 
 

@@ -1,12 +1,16 @@
-const getPosts = async (_, { input }, context) => {
+const getPosts = async (_, { input }, { getPosts }) => {
   const ApiFiltersInput = new URLSearchParams(input).toString();
-  const posts = await context.getPosts(`/?${ApiFiltersInput}`);
+  const posts = await getPosts(`/?${ApiFiltersInput}`);
   return posts.data;
 };
 
-const getPost = async (_, { id }, context) => {
-  const response = await context.getPosts(`/${id}`);
+const getPost = async (_, { id }, { getPosts }) => {
+  const response = await getPosts(`/${id}`);
   return response.data;
+};
+
+const user = async ({ userId }, _, { userDataLoader }) => {
+  return userDataLoader.load(userId);
 };
 
 export const postResolvers = {
@@ -15,9 +19,6 @@ export const postResolvers = {
     post: getPost,
   },
   Post: {
-    user: async (parent, _, context) => {
-      const response = await context.getUsers(`/${parent.userId}`);
-      return response.data;
-    },
+    user: user,
   },
 };

@@ -729,7 +729,87 @@ query GetUser($id: ID!) {
 
 ## Aula 24 - Dataloader
 
+- O dataloader é uma biblioteca que permite fazer cache de requisições, para que não seja feita uma requisição para cada objeto do array, mas sim uma requisição para todos os objetos do array de uma vez.
+- Batching: além do caching, o dataloader faz batching, que é a junção de requisições em uma única requisição, para que seja feita apenas uma requisição para todos os objetos do array.
 
+- Instalação do dataloader
+
+```bash
+yarn add dataloader
+```
+
+- Utilização do dataloader
+- Criação de um arquivo userDataLoaders.js
+
+```javascript
+import Dataloader from 'dataloader';
+
+export const makerUserDataLoader = (getUsers) => {
+  return new DataLoader(async (keys) => {
+    const response = await getUsers(`?id=${keys.join('&id=')}`);
+    return keys.map((key) => response.data.find((user) => user.id === key));
+  });
+};
+```
+
+- Criação do arquivo `utils.js` para fazer requisições HTTP
+
+```javascript
+import axios from 'axios';
+
+export const getUsers = (path = '/') =>
+  axios.get(process.env.API_URL + `/users${path}`);
+```
+
+- Utilização do dataloader no context
+
+```javascript
+import { makerUserDataLoader } from './dataLoaders/userDataLoaders';
+
+export const context = () => {
+  return {
+    userDataLoader: makerUserDataLoader(getUsers),
+    getUsers: getUsers,
+    getPosts: (path = '/') => axios.get(process.env.API_URL + `/posts${path}`),
+  };
+};
+```
+
+- Utilização do dataloader no resolver do Post para retornar o User
+
+```javascript
+import { makerUserDataLoader } from '../dataLoaders/userDataLoaders';
+
+const user = async ({ userId }, _, { userDataLoader }) => {
+  return userDataLoader.load(userId);
+};
+
+```
+
+- O mesmo foi feito para o resolver do User para retornar os Posts
+
+```javascript
+import { makerPostDataLoader } from '../dataLoaders/postDataLoaders';
+
+const posts = async ({ id }, _, { postDataLoader }) => {
+  return postDataLoader.load(id);
+};
+```
+
+- no arquivo `postDataLoaders.js`:
+
+```javascript
+import Dataloader from 'dataloader';
+
+export const makerPostDataLoader = (getPosts) => {
+  return new DataLoader(async (keys) => {
+    const response = await getPosts(`?userId=${keys.join('&userId=')}`);
+    return keys.map((key) => response.data.filter((post) => post.userId === key));
+  });
+};
+```
+
+## Aula 25 - Datasource
 
 
 

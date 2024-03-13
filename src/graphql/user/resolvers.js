@@ -9,15 +9,16 @@ const getUser = async (_, { id }, { getUsers }) => {
   return response.data;
 };
 
+const getPosts = async ({ id }, _, { postDataLoader }) => {
+  return postDataLoader.load(id);
+};
+
 export const userResolvers = {
   Query: {
     users: getUsers,
     user: getUser,
   },
   User: {
-    posts: async (parent, _, { getPosts }) => {
-      const response = await getPosts(`/?userId=${parent.id}`);
-      return response.data;
-    },
+    posts: getPosts,
   },
 };

@@ -1,10 +1,13 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3001';
+import { getUsers } from './user/utils';
+import { makerUserDataLoader } from './user/dataLoaders';
+import { makerPostDataLoader } from './post/dataLoaders';
+import { getPosts } from './post/utils';
 
 export const context = () => {
   return {
-    getUsers: (path = '/') => axios.get(API_URL + `/users${path}`),
-    getPosts: (path = '/') => axios.get(API_URL + `/posts${path}`),
+    userDataLoader: makerUserDataLoader(getUsers),
+    postDataLoader: makerPostDataLoader(getPosts),
+    getUsers: getUsers,
+    getPosts: getPosts,
   };
 };

@@ -925,6 +925,119 @@ const posts = async ({ id }, _, { dataSources }) => {
 };
 ```
 
+## Aula 27 - Mutations
+
+- Mutations são utilizadas para alterar o estado da aplicação, como criar, atualizar e deletar dados.
+- O primeiro passo é definitir o type Mutation como root do schema
+
+```javascript
+type Mutation {
+  createPost(input: PostInput!): User!
+```
+
+- O segundo passo é definir o input type `PostInput`, que é utilizado para passar os dados necessários para a criação de um post
+
+```javascript
+input PostInput {
+  title: String!
+  body: String!
+  userId: ID!
+}
+```
+
+- Após definir o type Mutation e o input type, é necessário definir o resolver da mutation. Para isso criamos alguns métodos de validação em `utils.js` e o resolver da mutation em `postResolvers.js`
+
+- A função `createPost` é o resolver para a mutation `createPost`. Ela é responsável por criar um novo post. No código, a função `createPost` é definida em `createPostFn` e é passada como argumento para a função `createPost`.
+
+```javascript:
+export const createPostFn = async (data, dataSources) => {
+  const { title, body, userId } = await createPostInfo(data, dataSources);
+  if (!title || !body || !userId) {
+    throw new ValidationError('Invalid input');
+  }
+
+  return await dataSources.post('/posts', {
+    title,
+    body,
+    userId,
+  });
+};
+
+econst userExists = async (userId, dataSources) => {
+  try {
+    await dataSources.context.dataSources.userAPI.getUser(userId);
+    return true;
+  } catch (error) {
+    throw new ValidationError('User does not exist');
+  }
+};
+
+const createPostInfo = async (postData, dataSources) => {
+  const { title, body, userId } = postData;
+
+  await userExists(userId, dataSources);
+
+  const indexRefPost = await dataSources.getPosts('?_sort=indexRef&_limit=1');
+
+  const indexRef = indexRefPost[0] ? indexRefPost[0].indexRef + 1 : 0;
+
+  return {
+    title,
+    body,
+    userId,
+    indexRef,
+    createdAt: new Date().toISOString(),
+  };
+};
+```
+
+- A função `createPostInfo` é responsável por validar os dados passados para a criação de um post. Ela é definida em `createPostInfo` e é passada como argumento para a função `createPostFn`.
+
+- Ja no datasource, é necessário criar o método `createPost` que é responsável por fazer a requisição POST para a criação de um novo post
+
+```javascript
+  async createPost(data) {
+    return this.post('/posts', data);
+  }
+```
+
+- E no resolver da mutation, é necessário chamar o método `createPost` do datasource
+
+```javascript
+const createPost = async (_, { input }, { dataSources }) => {
+  return dataSources.postAPI.createPost(input);
+};
+```
+
+- E na query, é necessário passar os dados necessários para a criação de um post
+
+```graphql
+mutation CreatePost($input: PostInput!) {
+  createPost(input: $input) {
+    id
+    title
+    body
+    userId
+  }
+}
+```
+
+- E passar as variáveis
+
+```json
+{
+  "input": {
+    "title": "Post 1",
+    "body": "Body 1",
+    "userId": "1"
+  }
+}
+```
+
+
+
+
+
 
 
 

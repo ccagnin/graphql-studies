@@ -1,3 +1,4 @@
+// Query resolvers
 const getPosts = async (_, { input }, { dataSources }) => {
   return dataSources.postAPI.getPosts(input);
 };
@@ -6,8 +7,14 @@ const getPost = async (_, { id }, { dataSources }) => {
   return dataSources.postAPI.getPost(id);
 };
 
-const user = async ({ userId }, _, { userDataLoader }) => {
-  return userDataLoader.load(userId);
+// Mutation resolvers
+const createPost = async (_, { input }, { dataSources }) => {
+  return dataSources.postAPI.createPost(input);
+};
+
+// Field resolvers
+const user = async ({ userId }, _, { dataSources }) => {
+  return dataSources.userAPI.batchLoadByUserId(userId);
 };
 
 export const postResolvers = {
@@ -17,5 +24,8 @@ export const postResolvers = {
   },
   Post: {
     user: user,
+  },
+  Mutation: {
+    createPost: createPost,
   },
 };

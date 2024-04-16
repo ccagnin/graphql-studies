@@ -1,5 +1,5 @@
 const getUsers = async (_, { input }, { dataSource }) => {
-  return dataSource.userAPI.dataLoader.load(input);
+  return dataSource.userAPI.getUsers(input);
 };
 
 const getUser = async (_, { id }, { dataSources }) => {

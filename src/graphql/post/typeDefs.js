@@ -15,4 +15,14 @@ export const postTypeDefs = gql`
     post(id: ID!): Post!
     posts(input: ApiFiltersInput): [Post!]!
   }
+
+  extend type Mutation {
+    createPost(input: CreatePostInput!): Post!
+  }
+
+  input CreatePostInput {
+    title: String!
+    body: String!
+    userId: String!
+  }
 `;

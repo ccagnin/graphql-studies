@@ -18,11 +18,18 @@ export const postTypeDefs = gql`
 
   extend type Mutation {
     createPost(input: CreatePostInput!): Post!
+    updatePost(id: ID!, input: UpdatePostInput!): Post!
   }
 
   input CreatePostInput {
     title: String!
     body: String!
     userId: String!
+  }
+
+  input UpdatePostInput {
+    title: String
+    body: String
+    userId: String
   }
 `;

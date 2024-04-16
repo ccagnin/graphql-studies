@@ -43,3 +43,17 @@ const createPostInfo = async (postData, dataSources) => {
     createdAt: new Date().toISOString(),
   };
 };
+
+export const updatePostFn = async (postId, data, dataSources) => {
+  if (!postId) {
+    throw new ValidationError('Missing post id');
+  }
+  if (data?.userId) {
+    await userExists(data.userId, dataSources);
+  }
+
+  return await dataSources.patch(postId, {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+};

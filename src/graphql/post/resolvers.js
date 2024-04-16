@@ -12,6 +12,10 @@ const createPost = async (_, { input }, { dataSources }) => {
   return dataSources.postAPI.createPost(input);
 };
 
+const updatePost = async (_, { id, input }, { dataSources }) => {
+  return dataSources.postAPI.updatePost(id, input);
+};
+
 // Field resolvers
 const user = async ({ userId }, _, { dataSources }) => {
   return dataSources.userAPI.batchLoadByUserId(userId);
@@ -27,5 +31,6 @@ export const postResolvers = {
   },
   Mutation: {
     createPost: createPost,
+    updatePost: updatePost,
   },
 };
